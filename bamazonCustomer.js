@@ -37,7 +37,6 @@ function start() {
       if (answer.welcome.toUpperCase() === "ENTER") {
         // askId(); // first fork
         showItems();
-
       } else {
         console.log(chalk.blue("good-bye!"));
       }
@@ -45,11 +44,12 @@ function start() {
 }
 //
 let a = "";
+
 function showItems() {
   connection.query("SELECT * FROM products", function (error, res) {
     if (error) throw error;
     inquirer.prompt([{
-      name: "itemChoice",     
+      name: "itemChoice",
       type: "list",
       choices: function () {
         let itemArray = [];
@@ -59,84 +59,86 @@ function showItems() {
         return itemArray;
       }
     }]).then(function (data) {
+      console.log("placemarker1" + data); //////////////////////////////////////
       a = data.itemChoice;
-      // console.log(a);
+      // console.log(a); ////////////////////////
       selectQuery();
     });
   });
 };
+let itemId = "";
 
 function selectQuery() {
   connection.query("SELECT * FROM products WHERE product_name = '" + a + "'",
     function (error, res) {
       if (error) throw error;
-      //always First loop over the array to get a single object and then extract it's properties:
-      // var itemArray = [];
+      //always First loop over the array to get a single object and then extract it's properties:   
       for (var i = 0; i < res.length; i++) {
-        // itemArray.push(res[i]);
-        console.log(res[i]);
+        console.log(chalk.green(a + "'s " + "price:$" + res[i].price) + "|" + chalk.yellow("ID number: " + res[i].item_id) + "|" + chalk.blue("Stock Quantity: " + res[i].stock_quantity));
+        itemId = res[i].item_id;
       }
       askId();
     })
 };
 
-let ask_id = "";
+let ask_id;
 
 function askId() {
   inquirer
     .prompt({
       name: "askId",
       type: "input",
-      message: chalk.yellow("Please enter item_id number")
+      message: chalk.yellow("Enter ID Number to place order")
     })
     .then(function (answer) {
       ask_id = answer.askId;
-      console.log(ask_id);
-      askUnits();
+
+      if (itemId === parseInt(ask_id)) { // gotta parse it first.. fixed a bug where user can place an order with incorrect ID
+        askUnits();
+      } else {
+        console.log("Enter correct ID number");
+        askId();
+      }
+
     });
 };
+let unitSold = "";
 
-let unitSold = ""; // to hold ln 107
 function askUnits() {
   inquirer
     .prompt({
       name: "askUnits",
       type: "input",
-      message: chalk.yellow("Please enter how many units you would like to purchase")
+      message: chalk.yellow("Enter the amount of units you would like to purchase")
     }).then(function (answer) {
       unitSold = answer.askUnits;
       console.log("checking inventory...............");
-      console.log(unitSold);
       stockComparison();
     })
 }
 
 var stockQuantity;
-
 var total; // place holder for the total items
 function stockComparison() {
   connection.query("SELECT * FROM products WHERE product_name = '" + a + "'",
     function (error, res) {
       if (error) throw error;
-      //always First loop over the array to get a single object and then extract it's properties:
-      // var itemArray = [];    
       stockQuantity = res[0].stock_quantity;
       total = res[0].price;
-      // condition if the item is on stock
-      if (stockQuantity > unitSold) {
+      // condition if the item is in stock
+      console.log("1" + itemId);
+      console.log("2" + ask_id);
+      if (stockQuantity > unitSold && itemId === ask_id) { // BUG where it was allowed for the program to continue purchase without a valid id
         stockQuantity = stockQuantity - unitSold;
         total = res[0].price + total;
         console.log("order placed!");
-        // orderFunction();
-        // console.log(stockQuantity);  
         orderFunction();
-        
       } else {
-        console.log("item is not on stock, would you like to try again?");
+        console.log("item is not in stock, would you like to try again?");
         inquirer
           .prompt({
             name: "continue",
-            type: "list",        
+            type: "list",
             choices: ["YES", "EXIT"]
           }).then(function (answer) {
             if (answer.continue === "YES") {
@@ -146,11 +148,10 @@ function stockComparison() {
             }
           })
       }
-
     })
 }
+
 function orderFunction() {
-  console.log(stockQuantity);
   connection.query(
     "UPDATE products SET ? WHERE ?",
     [{
@@ -174,11 +175,11 @@ function orderFunction() {
       message: chalk.yellow("Shop more?"),
       choices: ["YES", "EXIT"]
     }).then(function (answer) {
-      if (answer.continue === "YES") {       
+      if (answer.continue === "YES") {
         showItems();
-      } else {   
+      } else {
+        console.log(chalk.blue("you spent $" + total));
         chalk.yellow(console.log("Thank you for shopping at Bamazon!"));
-        console.log(chalk.blue("you spend  " + total));
       }
     })
 }
