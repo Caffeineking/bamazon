@@ -13,7 +13,7 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "root",
+  password: "root", // I have a password on  mine
   database: "bamazon"
 });
 // initiate connection
@@ -58,10 +58,8 @@ function showItems() {
         }
         return itemArray;
       }
-    }]).then(function (data) {
-      console.log("placemarker1" + data); //////////////////////////////////////
-      a = data.itemChoice;
-      // console.log(a); ////////////////////////
+    }]).then(function (data) {     
+      a = data.itemChoice; 
       selectQuery();
     });
   });
@@ -96,14 +94,13 @@ function askId() {
       if (itemId === parseInt(ask_id)) { // gotta parse it first.. fixed a bug where user can place an order with incorrect ID
         askUnits();
       } else {
-        console.log("Enter correct ID number");
+        console.log(chalk.red("Enter correct ID number"));
         askId();
       }
-
     });
 };
-let unitSold = "";
 
+let unitSold = "";
 function askUnits() {
   inquirer
     .prompt({
@@ -112,7 +109,7 @@ function askUnits() {
       message: chalk.yellow("Enter the amount of units you would like to purchase")
     }).then(function (answer) {
       unitSold = answer.askUnits;
-      console.log("checking inventory...............");
+      console.log(chalk.green("checking inventory..............."));
       stockComparison();
     })
 }
@@ -125,16 +122,14 @@ function stockComparison() {
       if (error) throw error;
       stockQuantity = res[0].stock_quantity;
       total = res[0].price;
-      // condition if the item is in stock
-      console.log("1" + itemId);
-      console.log("2" + ask_id);
-      if (stockQuantity > unitSold && itemId === ask_id) { // BUG where it was allowed for the program to continue purchase without a valid id
+      // condition if the item is in stock     
+      if (stockQuantity > unitSold) { // BUG where it was allowed for the program to continue purchase without a valid id
         stockQuantity = stockQuantity - unitSold;
         total = res[0].price + total;
-        console.log("order placed!");
+        console.log(chalk.green("order placed!"));
         orderFunction();
       } else {
-        console.log("item is not in stock, would you like to try again?");
+        console.log(chalk.red("item is not in stock, would you like to try again?"));
         inquirer
           .prompt({
             name: "continue",
@@ -162,10 +157,8 @@ function orderFunction() {
       }
     ],
     function (error) {
-      if (error) throw error;
-      // your total is
+      if (error) throw error;    
       console.log("order placed successfully!");
-      // console.log("placeholder" + res[0].stock_quantity);
     }
   );
   inquirer
