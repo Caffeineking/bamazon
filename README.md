@@ -1,4 +1,4 @@
 #### Customer View
 `node bamazonCustomer.js`
 
-![alt text](https://drive.google.com/file/d/1x3XTra0FcqExOIH6xPft0TfXZ7k257IW/view "Customer View Demo")
+![alt text](https://github.com/Caffeineking/bamazon/blob/master/assets/Sep%2025%2C%202018%208_05%20AM%20(1).gif "Customer View Demo")
