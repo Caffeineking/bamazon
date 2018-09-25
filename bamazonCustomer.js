@@ -125,11 +125,11 @@ function stockComparison() {
       var resPrice;
       if (error) throw error;
       stockQuantity = res[0].stock_quantity;
-      resPrice = res[0].price;
+      total = res[0].price;
       // condition if the item is in stock     
       if (stockQuantity > unitSold) { // BUG where it was allowed for the program to continue purchase without a valid id
         stockQuantity = stockQuantity - unitSold;
-          total + resPrice;
+         toatl = total + res[0].price;
 
           
         console.log(typeof(itemId))
