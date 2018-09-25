@@ -106,17 +106,18 @@ function askUnits() {
     .prompt({
       name: "askUnits",
       type: "input",
-      message: chalk.yellow("Enter the amount of units you would like to purchase")
+      message: chalk.yellow(chalk.blue("Enter the amount of units you would like to purchase"))
     }).then(function (answer) {
-      if(answer.askUnits > 0){ /// checks for numbers only .. laziest way to do it without having to make a charcode.
+      unitSold = answer.askUnits;
+    if(unitSold > 0){
       console.log(chalk.green("checking inventory..............."));
       stockComparison();
       }else{
-        console.log(chalk.red("enter valid number"));
+        console.log("enter valid number");
         askUnits();
-      }  
+      }
     })
-}
+} 
 
 var stockQuantity;
 var total; // place holder for the total items
@@ -126,8 +127,9 @@ function stockComparison() {
       if (error) throw error;
       stockQuantity = res[0].stock_quantity;
       total = res[0].price;
+     
       // condition if the item is in stock     
-      if (stockQuantity > unitSold) { // BUG where it was allowed for the program to continue purchase without a valid id
+      if (stockQuantity > unitSold) { // BUG where it was allowed for the program to continue purchase without a valid id an
         stockQuantity = stockQuantity - unitSold;
         total = res[0].price + total;
         console.log(chalk.green("order placed!"));
