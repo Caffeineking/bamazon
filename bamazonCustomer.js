@@ -24,6 +24,10 @@ connection.connect(function (err) {
   start();
 });
 
+var total;
+
+var stockQuantity;
+var zero = 0; // place holder for the total items
 function start() {
   inquirer
     .prompt({
@@ -114,18 +118,23 @@ function askUnits() {
     })
 }
 
-var stockQuantity;
-var total; // place holder for the total items
+
 function stockComparison() {
   connection.query("SELECT * FROM products WHERE product_name = '" + a + "'",
     function (error, res) {
+      var resPrice;
       if (error) throw error;
       stockQuantity = res[0].stock_quantity;
-      total = res[0].price;
+      resPrice = res[0].price;
       // condition if the item is in stock     
       if (stockQuantity > unitSold) { // BUG where it was allowed for the program to continue purchase without a valid id
         stockQuantity = stockQuantity - unitSold;
-        total = res[0].price + total;
+          total + resPrice;
+
+          
+        console.log(typeof(itemId))
+
+        console.log("your total is " + total + "your resPrice is" + resPrice);
         console.log(chalk.green("order placed!"));
         orderFunction();
       } else {
