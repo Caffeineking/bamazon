@@ -1,3 +1,4 @@
-Bamazon lvl.1
+#### Customer View
+`node bamazonCustomer.js`
 
-https://drive.google.com/file/d/1x3XTra0FcqExOIH6xPft0TfXZ7k257IW/view
+![alt text](https://github.com/CaffeineKing/bamazon/blob/master/assets/images/Customer-View.gif "Customer View Demo")
