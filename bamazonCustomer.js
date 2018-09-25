@@ -108,9 +108,13 @@ function askUnits() {
       type: "input",
       message: chalk.yellow("Enter the amount of units you would like to purchase")
     }).then(function (answer) {
-      unitSold = answer.askUnits;
+      if(answer.askUnits > 0){ /// checks for numbers only .. laziest way to do it without having to make a charcode.
       console.log(chalk.green("checking inventory..............."));
       stockComparison();
+      }else{
+        console.log(chalk.red("enter valid number"));
+        askUnits();
+      }  
     })
 }
 
