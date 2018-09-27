@@ -90,7 +90,6 @@ function askId() {
     })
     .then(function (answer) {
       ask_id = answer.askId;
-
       if (itemId === parseInt(ask_id)) { // gotta parse it first.. fixed a bug where user can place an order with incorrect ID
         askUnits();
       } else {
@@ -113,21 +112,20 @@ function askUnits() {
       console.log(chalk.green("checking inventory..............."));
       stockComparison();
       }else{
-        console.log("enter valid number");
+        console.log(chalk.red("enter valid number"));
         askUnits();
       }
     })
 } 
 
-var stockQuantity;
-var total; // place holder for the total items
+var total=0; 
+var stockQuantity; // should be =0 but left it liek this
+ // place holder for the total items
 function stockComparison() {
   connection.query("SELECT * FROM products WHERE product_name = '" + a + "'",
     function (error, res) {
       if (error) throw error;
-      stockQuantity = res[0].stock_quantity;
-      total = res[0].price;
-     
+      stockQuantity = res[0].stock_quantity;    
       // condition if the item is in stock     
       if (stockQuantity > unitSold) { // BUG where it was allowed for the program to continue purchase without a valid id an
         stockQuantity = stockQuantity - unitSold;
@@ -178,7 +176,7 @@ function orderFunction() {
         showItems();
       } else {
         console.log(chalk.blue("you spent $" + total));
-        chalk.yellow(console.log("Thank you for shopping at Bamazon!"));
+        chalk.yellow(console.log(chalk.green("Thank you for shopping at Bamazon!")));
       }
     })
 }
