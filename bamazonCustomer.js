@@ -24,6 +24,10 @@ connection.connect(function (err) {
   start();
 });
 
+var total;
+
+var stockQuantity;
+var zero = 0; // place holder for the total items
 function start() {
   inquirer
     .prompt({
@@ -123,13 +127,13 @@ var stockQuantity; // should be =0 but left it liek this
  // place holder for the total items
 function stockComparison() {
   connection.query("SELECT * FROM products WHERE product_name = '" + a + "'",
-    function (error, res) {
+    function (error, res) {    
       if (error) throw error;
       stockQuantity = res[0].stock_quantity;    
       // condition if the item is in stock     
       if (stockQuantity > unitSold) { // BUG where it was allowed for the program to continue purchase without a valid id an
         stockQuantity = stockQuantity - unitSold;
-        total = res[0].price + total;
+         total = total + res[0].price;
         console.log(chalk.green("order placed!"));
         orderFunction();
       } else {
